@@ -19,6 +19,12 @@
 - 참고: [DEVELOPER_GUIDE.md](https://github.com/thruthesky/all_in_one/blob/main/docs/DEVELOPER_GUIDE.md) 문서를 참고합니다.
 
 
+# 멤버
+
+- 송재호 https://github.com/thruthesky  
+
+- 방지민 https://github.com/jimingoal
+
 # 만능앱 개발 스터디 목적 및 인원 모집
 
 - 서로 도와 가며 공부해서 맨 처음부터 끝(앱 배포)까지 하는 스터디.
