@@ -20,9 +20,8 @@ dependencies:
   get: ^4.1.4
   get_storage: ^2.0.2
   flutter_zoom_drawer: ^2.0.2+4
-  
-  rxdart: ^0.27.1
 
+  rxdart: ^0.27.1
 
   # 전화걸기. QR 코드 스캔 후 전화 걸기.
   flutter_phone_direct_caller: ^2.0.0
@@ -30,9 +29,7 @@ dependencies:
   # 아이콘 모음집
   fluttericon: ^2.0.0
 
-
   webview_flutter: ^2.0.8
-
 
   x_flutter:
     path: packages/subtrees/x_flutter
@@ -60,14 +57,16 @@ dependencies:
 
   exchange_rate:
     path: packages/features/exchange_rate
-    
+
+  check:
+    path: packages/features/check
+
 dependency_overrides:
   # flutter_simple_calculator
   expressions: ^0.2.2
 
   # expressions
   rxdart: ^0.27.1
-
 
 dev_dependencies:
   flutter_test:
@@ -77,8 +76,6 @@ dev_dependencies:
     sdk: flutter
   flutter_driver:
     sdk: flutter
-
-
 
 flutter:
   uses-material-design: true

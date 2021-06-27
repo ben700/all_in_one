@@ -12,6 +12,7 @@ import 'package:fluttericon/typicons_icons.dart';
 import 'package:get/get.dart';
 import 'package:weather/weather.dart';
 import 'package:widgets/widgets.dart';
+import 'package:check/check.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -36,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   Text('만능앱'),
                   Row(children: [
+                    
                     UserName(
                       suffixLogin: '님의',
                       defaultName: '당신의',
@@ -45,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text('apple'.tr),
                   ]),
                   spaceXl,
+                  CheckDisplay(),
                   Text('자주 사용하는 기능', style: tsSm),
                   Divider(),
                   spaceXl,

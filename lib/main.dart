@@ -27,7 +27,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:services/services.dart';
 import 'package:weather/weather.dart';
 import 'package:widgets/widgets.dart';
-
 import 'package:country_code_picker/country_localizations.dart';
 
 void main() async {

@@ -5,6 +5,12 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "jhstudy",
+      "request": "launch",
+      "program": "projects/jhstudy/lib/main.dart",
+      "type": "dart"
+    },
+    {
       "name": "all_in_one",
       "request": "launch",
       "type": "dart"

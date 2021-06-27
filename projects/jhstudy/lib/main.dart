@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:widgets/widgets.dart';
+import 'package:check/check.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(MyApp());
@@ -97,6 +99,8 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'You have pushed the button this many times:',
             ),
+            Button(text: "사고사고싶다"),
+            CheckDisplay(),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headline4,
