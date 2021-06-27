@@ -6,6 +6,7 @@
 - [참고해야 할 문서](#참고해야-할-문서)
 - [참여 인원 모집](#참여-인원-모집)
 - [본 프로젝트(스터디) 공부해야 할 순서](#본-프로젝트스터디-공부해야-할-순서)
+  - [기타](#기타)
   - [각 개발자가 반드시 따라야하는 부분](#각-개발자가-반드시-따라야하는-부분)
 - [이슈 및 개발 작업 공간](#이슈-및-개발-작업-공간)
 - [과제](#과제)
@@ -25,6 +26,7 @@
 - [모델](#모델)
 - [위젯 패키지](#위젯-패키지)
   - [SVG](#svg)
+- [서브트리, Subtree](#서브트리-subtree)
 - [백엔드](#백엔드)
   - [x_flutter 패키지 개발 방법](#x_flutter-패키지-개발-방법)
 - [파이어베이스](#파이어베이스)
@@ -42,6 +44,8 @@
 - [Mono repo](#mono-repo-1)
   - [각자의 프로젝트 생성](#각자의-프로젝트-생성)
   - [각자의 프로젝트 설정](#각자의-프로젝트-설정)
+- [i18n, 다국어](#i18n-다국어)
+- [계산기](#계산기)
 - [문제점, 버그](#문제점-버그)
 
 
@@ -60,9 +64,6 @@
 
 # 본 프로젝트(스터디) 공부해야 할 순서
 
-- 온라인 세미나 참여
-  - 세미나 참여하는 방법: README 참고
-- 깃 이슈 및 프로젝트 참고
 - 앱 설치 및 실행
 - 편집기 설정
 - 프로젝트 설정
@@ -86,6 +87,10 @@
 - 자기만의 브랜치에서 맡은 기능 개발
 - Mono repo 를 통한 자기만의 앱 개발
 
+## 기타
+- 온라인 세미나 참여
+  - 세미나 참여하는 방법: README 참고
+- 깃 이슈 및 프로젝트 참고
 ## 각 개발자가 반드시 따라야하는 부분
 
 - 위젯을 만들면, 재 사용가능하도록 다듬어, `WidgetCollection` 반드시 추가를 해야 합니다.
@@ -304,8 +309,25 @@
 - 위젯 패키지에 `assets/svg` 폴더에 SVG 파일들이 저장되어져 있으며, 또 필요한 SVG 파일은 항상 이 위치에 저장을 해야 한다.
   - svg 사용을 하려면 `svg('face/fair');` 와 같이 하면 된다.
   - 경로는 `assets/svg/[...].svg` 에서 대괄호 안에 들어가는 경로를 지정하면 된다. 예) `face/fair` 는 `packages/wdigets/assets/svg/face/fair.svg` 가 된다.
-  - 만약, `widgets` 패키지가 아닌 다른 패키지 또는 앱 폴더의 assets 경로에서 사용하고 싶다면, `svg('face/fair', '패키지 이름')` 와 같이 사용하면 된다.
-  - 
+  - 만약, `widgets` 패키지가 아닌 다른 패키지 또는 앱 폴더의 assets 경로에서 사용하고 싶다면, `svg('face/fair', '패키지 경로')` 와 같이 사용하면 된다.
+  
+예제)
+```dart
+svg('face/devil')
+svg(uviIcon(current.uvi), width: 20, height: 20)
+svg('money-exchange', package: '..'), // 앱 assets 경로
+```
+
+# 서브트리, Subtree
+
+- 패키지(소스 코드)를 pub.dev 에 배포하는 것 보다 로컬(개발) 컴퓨터에서 수정하여 작업하는 것이 편합니다. 자신이 만든 패키지를 세상에 공개해서 널리 쓰게 할 목적이 아니라면, 굳이 pub.dev 에 배포 할 필요 없습니다.
+- 로컬(개발) 컴퓨터에서 수정을 하는 것이 편한데, 때로는 소스 코드가 git repo 에 있어야 할 때가 있습니다. 즉, 소스 코드가 git repo 로 저장되고 이리 저리 활용이 될 필요가 있을 수 있습니다. 예를 들면, 다른 프로젝트의 submodule 로 들어갈 수 있습니다.
+  - 하지만, 이와 같은 경우, git submodule 에 대해서 알지 못하는 개발자가 작업을 하는데 걸림돌이 됩니다.
+
+- 그래서, `git subtree` 로 git repo 의 코드를 가져와서 사용합니다.
+
+- 참고로 `x_flutter` 는 `$ git subtree --prefix=packages/subtrees/x_flutter x_flutter main` 와 같이 지정되어져 있고,
+  `country_currency_pickers` 는 `% git subtree add --prefix=packages/subtrees/country_currency_pickers --squash country_currency_pickers master` 와 같이 지정되어져 있습니다.
 
 # 백엔드
 
@@ -400,6 +422,8 @@ ElevatedButton(
   이 둘의 차이는 `widgets` 패키지는 오직 위젯만 제공합니다. 버튼 위젯, 사용자 이름 표시 위젯 등 앱 내에 표시할 위젯만 제공합니다.
   `services` 패키지는 위젯을 제공하지 않습니다. 위젯보다는 로직 또는 기능을 제공합니다. 그래서 대부분 함수 또는 클래스를 사용합니다. 예를 들면, 알림창을 띄울 때, `showDialog()` 와 같은 함수를 호출해야 합니다. 이와 같이 위젯이 하닌 기능을 `services` 패키지가 합니다.
 
+- 자세한 위젯 사용방법은 widgets/readme.md 파일 참고
+
 
 ## 재사용 가능한 위젯 모음
 
@@ -452,8 +476,7 @@ ElevatedButton(
   - 그래서 Mono repo 를 선택 했습니다.
 
 - 흩어져 있는 repo 들은 `git subtree` 기능으로 모았으며, `/packages` 폴더에 재 사용가능한 코드를 모아 놓았습니다.
-  - 참고로 `git subtree` 는
-    - `$ git subtree --prefix=packages/subtrees/x_flutter x_flutter main` 으로 지정되어져 있습니다.
+  - 참고, 본 문서의 subtrees 항목
 
 - `/projects` 폴더에 서브 프로젝트를 생성하면 됩니다.
 
@@ -500,6 +523,17 @@ flutter:
 
 
 
+
+# i18n, 다국어
+
+- main 브랜치의 GetMaterialApp 에 다국어가 적용되어져 있다.
+- 다국어는 services 패키지의 app.translation.dart 에서 제공하고 있다.
+
+
+
+# 계산기
+
+- https://itnext.io/building-a-calculator-app-in-flutter-824254704fe6 를 보고 따라 하다가, 그냥 https://pub.dev/packages/flutter_simple_calculator 으로 대체.
 
 # 문제점, 버그
 

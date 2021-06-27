@@ -23,7 +23,7 @@ class _WeatherIconState extends State<WeatherIcon> {
   @override
   void initState() {
     super.initState();
-    subscribe = WeatherService.instance.dataChanges
+    subscribe = WeatherService.instance.weatherChanges
         .where((event) => event != null)
         .listen((value) => setState(() => data = value));
   }
@@ -67,7 +67,8 @@ class _WeatherIconState extends State<WeatherIcon> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(data!.current!.temp.toString(), style: TextStyle(fontSize: 16)),
+                            Text(data!.current!.temp!.round().toString(),
+                                style: TextStyle(fontSize: 16)),
                             Text('℃', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                           ],
                         ),
