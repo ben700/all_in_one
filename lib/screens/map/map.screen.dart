@@ -19,7 +19,7 @@ class MapScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           KakaoMapView(
-            customScript: MultiMarkerScript.script,
+              customScript: MultiMarkerScript.script,
               width: size.width,
               height: 400,
               kakaoMapKey: kakaoMapKey,
@@ -29,9 +29,10 @@ class MapScreen extends StatelessWidget {
               showZoomControl: true,
               markerImageURL:
                   'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-              onTapMarker: (message) async {
+              onTapMarker: (javascriptMessage) async {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();  //현재 올라와있는 스낵바 내리기.
                 ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Marker is clicked')));
+                    .showSnackBar(SnackBar(content: Text(javascriptMessage.message)));
 
                 //await _openKakaoMapScreen(context);
               }),

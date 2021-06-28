@@ -104,7 +104,7 @@ class _AioAppState extends State<AioApp> {
       title: '만능앱',
       // defaultTransition: Transition.noTransition,
       theme: themeData,
-      initialRoute: RouteNames.home,
+      initialRoute: RouteNames.map,
 
       getPages: [
         GetPage(name: RouteNames.home, page: () => HomeScreen()),

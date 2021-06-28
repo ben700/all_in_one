@@ -13,7 +13,7 @@ var map = new kakao.maps.Map(mapContainer, mapOption);
  
 var positions = [
     {
-        title: 'A', 
+        title: '카카오', 
         latlng: new kakao.maps.LatLng(33.450705, 126.570677)
     },
     {
@@ -32,11 +32,12 @@ var positions = [
 
 var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
     
-for (var i = 0; i < positions.length; i ++) {
-    
     var imageSize = new kakao.maps.Size(24, 35); 
     
     var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
+    
+for (var i = 0; i < positions.length; i ++) {
+    
     
     var marker = new kakao.maps.Marker({
         map: map, 
