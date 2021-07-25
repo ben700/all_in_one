@@ -307,6 +307,10 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   webview_flutter: 3603125dfd3bcbc9d8d418c3f80aeecf331c068b
 
+<<<<<<< HEAD
 PODFILE CHECKSUM: a22838b7eeeacb9feb9b0dfc4693580df9e685db
+=======
+PODFILE CHECKSUM: 14412d1c2bace317f7a7f55a50e0b0d8e3580554
+>>>>>>> main
 
 COCOAPODS: 1.10.1

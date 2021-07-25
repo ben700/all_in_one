@@ -71,9 +71,16 @@ dependencies:
     path: packages/features/about_phone
   geolocator: ^7.2.0+1
 
+<<<<<<< HEAD
   voice_recorder:
     path: packages/features/voice_recorder
 
+=======
+  # 음성 녹음 및 재생
+  voice_recorder: 
+    path: packages/features/voice_recorder
+    
+>>>>>>> main
 dependency_overrides:
   # flutter_simple_calculator
   expressions: ^0.2.2
