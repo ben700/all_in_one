@@ -21,6 +21,9 @@ dependencies:
   # 마이크 권한 획득
   permission_handler: ^8.1.2
 
+  widgets:
+    path: /Users/kimjinsub/all_in_one/lib/widgets
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

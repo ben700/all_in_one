@@ -98,9 +98,7 @@ class _VoiceRecorderDisplayState extends State<VoiceRecorderDisplay> {
                 getFileNameList();
               });
               _fileNameList = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => FileListPage(_fileNameList)));
+                  context, MaterialPageRoute(builder: (context) => FileListPage(_fileNameList)));
             },
             child: Text('File List'))
       ],

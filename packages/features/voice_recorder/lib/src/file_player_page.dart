@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:widgets/widgets.dart';
 
 class FilePlayerPage extends StatefulWidget {
   final _file;
