@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'file_list_page.dart';
+import 'package:voice_recorder/voice_recorder.dart';
 
 class VoiceRecorderDisplay extends StatefulWidget {
   const VoiceRecorderDisplay({Key? key}) : super(key: key);
@@ -19,8 +19,6 @@ class _VoiceRecorderDisplayState extends State<VoiceRecorderDisplay> {
   String _path = '';
   String _fileName = '';
   List<dynamic> _fileNameList = [];
-
-  // typedef Func = void Function;
 
   @override
   void initState() {
@@ -98,7 +96,9 @@ class _VoiceRecorderDisplayState extends State<VoiceRecorderDisplay> {
                 getFileNameList();
               });
               _fileNameList = await Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => FileListPage(_fileNameList)));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FileListPage(_fileNameList)));
             },
             child: Text('File List'))
       ],
