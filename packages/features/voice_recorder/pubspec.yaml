@@ -22,11 +22,20 @@ dependencies:
   permission_handler: ^8.1.2
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   widgets:
     path: /Users/kimjinsub/all_in_one/lib/widgets
 
 =======
 >>>>>>> main
+=======
+  widgets:
+    path: ../../widgets
+
+  utils:
+    path: ../../services/utils
+
+>>>>>>> e25587ff3cbcb26e54b83ebb9ba4e662ba3452eb
 dev_dependencies:
   flutter_test:
     sdk: flutter

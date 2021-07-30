@@ -20,9 +20,4 @@ class RouteNames {
   static const String exchangeRate = 'exchangeRate';
   static const String beta = 'beta';
   static const String voiceRecorder = 'voiceRecorder';
-<<<<<<< HEAD
-  static const String voiceRecorderPlay = 'voiceRecorderPlay';
-  static const String voiceRecorderFileList = 'voiceRecorderFileList';
-=======
->>>>>>> main
 }

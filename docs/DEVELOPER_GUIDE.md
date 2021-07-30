@@ -27,11 +27,6 @@
 - [x_flutter 패키지](#x_flutter-패키지)
 - [상태 관리](#상태-관리)
 - [모델](#모델)
-- [위젯 패키지](#위젯-패키지)
-  - [SVG](#svg)
-- [서브트리, Subtree](#서브트리-subtree)
-- [백엔드](#백엔드)
-  - [x_flutter 패키지 개발 방법](#x_flutter-패키지-개발-방법)
 - [코드 설명](#코드-설명)
   - [실행 및 설정](#실행-및-설정)
   - [스크린 생성](#스크린-생성)
@@ -40,12 +35,20 @@
   - [재사용 가능한 위젯 모음](#재사용-가능한-위젯-모음)
   - [사용자 정보 표시](#사용자-정보-표시)
   - [사진 업로드](#사진-업로드)
+  - [자주 사용하는 기능](#자주-사용하는-기능)
+    - [알림창](#알림창)
+    - [에러 알림창](#에러-알림창)
   - [게시판](#게시판)
     - [게시판 카테고리 정보](#게시판-카테고리-정보)
     - [ForumModel](#forummodel)
 - [Mono repo](#mono-repo-1)
-  - [각자의 프로젝트 생성](#각자의-프로젝트-생성)
+  - [개별 프로젝트 생성](#개별-프로젝트-생성)
   - [각자의 프로젝트 설정](#각자의-프로젝트-설정)
+- [위젯 패키지](#위젯-패키지)
+  - [SVG](#svg)
+- [서브트리, Subtree](#서브트리-subtree)
+- [백엔드](#백엔드)
+  - [x_flutter 패키지 개발 방법](#x_flutter-패키지-개발-방법)
 - [파이어베이스](#파이어베이스)
   - [파이어베이스 설정](#파이어베이스-설정)
   - [파이어베이스 애널리스틱스](#파이어베이스-애널리스틱스)
@@ -336,6 +339,253 @@
   - `> Null safety? Yes`
 
 
+# 코드 설명
+
+## 실행 및 설정
+
+- 앱의 구동 환경에 따라 다양한 설정이 필요합니다.
+  - 예를 들면, 개발할 때에는 백엔드를 개발 전용 백엔드 서버로 연결하고, 실제 서비스에서는 실제 서비스 전용 백엔드 서버로 연결을 해야합니다.
+  - 이와 같은 설정을 `services/config.dart` 에 저장을 합니다. 이것은 `만능앱`의 스타일 가이드일 뿐이며, 꼭 지켜야하는 것은 아닙니다.
+
+- 참고, launch.json 사용 방법을 살펴보세요.
+
+
+## 스크린 생성
+
+스크린(페이지)를 생성하는 방법에 대해서 설명을 합니다.
+
+스크린 생성은 플러터 개발에 있어서 일반적인 스크린 생성을 위해서 dart 파일을 생성하고 widget 클래스를 만드는 것과 동일합니다. 여러 개발자가 같이 개발을 하는 `만능앱`에서는 `만능앱`만의 코딩 스타일이 필요합니다. 물론 이러한 `만능앱`만의 코딩 스타일이 플러터 스타일 가이드 보다 우선해서는 안 될 것입니다.
+
+여기서는 `memo` 라는 스크린을 만드는 예를 듭니다.
+
+- 먼저, `screens` 폴더안에 `memo` 폴더를 만들고, `memo.screen.dart` 와 같이 dart 파일을 만듭니다.
+  - 아래와 같이 만들면 됩니다.
+    - `lib/screens/memo/memo.screen.dart`
+
+- 예제 - `MemoScreen` 스크린 위젯
+
+```dart
+import 'package:flutter/material.dart';
+import '../../widgets/layout.dart';
+
+class MemoScreen extends StatelessWidget {
+  const MemoScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Layout(
+      title: '메모장',
+      body: Text('메모장'),
+    );
+  }
+}
+```
+
+참고로 위 예제를 보면, `MemoScreen` 에 `Scaffold` 가 없습니다. `Layout` 위젯에 대한 설명을 참고 해 주세요.
+
+- 그리고, `services/route_name.dart` 에 memo 라는 변수를 만듭니다.
+
+```dart
+class RouteNames {
+  static final String memo = 'memo'; // <== 여기에 추가
+}
+```
+
+위의 `RouteNames`는 라우트 경로를 담은 클래스입니다. 단순히, 오타 방지 또는 라우트 경로를 보다 쉽게 활용하도록 해 줍니다.
+
+
+- 그리고, `main.ts` 에서 아래와 같이 `getPages:` 속성에 `MemoScreen` 을 추가합니다.
+
+```dart
+class AioApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      // ...
+      getPages: [
+        // ...
+        GetPage(name: RouteNames.memo, page: () => MemoScreen()), // <== 여기에 추가
+      ],
+    );
+  }
+}
+```
+
+- 그리고, `memo` 스크린으로 이동 할 수 있도록 메뉴(또는 특정 위치)에 버튼을 달고 클릭이 되면 `service.open(RouteNames.memo);` 를 실행해서 해당 페이지로 이동합니다.
+
+
+```dart
+ElevatedButton(
+  onPressed: () => service.open(RouteNames.memo), // 클릭하면, memo 스크린으로 이동
+  child: Text('메모장'),
+)
+```
+
+## Layout
+
+- 일반적으로 각 스크린(페이지)은 Scaffold 를 바탕으로 appbar, body 등을 구성하는데, 문제는 스크린이 많아 질수록 앱바의 디자인이나 body 의 여백 등이 제각각으로 되어 통일된 디자인을 하기가 쉽지 않게 됩니다.
+  이 때, `Layout` 위젯들 만들어, 그 안에 Scaffold 를 두고 통일된 appbar, body 등의 디자인을 적용할 수 있습니다.
+  Layout 을 수정하면 전체 스크린의 디자인이 모두 같이 변경되며, 특히 메뉴, 퀵메뉴 등 여러가지 부가적인 기능을 Layout 에 추가하여 모든 페이지 적용 할 수 있습니다.
+
+- Layout 위젯은 각 프로젝트의 공유 widgets 폴더에 넣으면 됩니다.
+  그리고 이 위젯 안에서 packages/widgets/layout 에 있는 여러가지 위젯 중 하나를 선택해서 사용하면 됩니다.
+
+- 예제 - `Layout` 위젯 사용 방법
+
+```dart
+import 'package:flutter/material.dart';
+import '../../widgets/layout.dart';
+
+class MemoScreen extends StatelessWidget {
+  const MemoScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Layout(
+      title: '메모장',
+      body: Text('메모장'),
+    );
+  }
+}
+```
+
+
+## widgets 패키지와 services 패키지 안내
+
+- `widgets` 패키지에는 재 사용 가능한 위젯이 들어가는데, 좀 복잡한 위젯이 있을 수 있습니다. `services` 패키지는 말 그대로 서비스가 필요한 경우를 말합니다.
+  이 둘의 차이는 `widgets` 패키지는 오직 위젯만 제공합니다. 버튼 위젯, 사용자 이름 표시 위젯 등 앱 내에 표시할 위젯만 제공합니다.
+  `services` 패키지는 위젯을 제공하지 않습니다. 위젯보다는 로직 또는 기능을 제공합니다. 그래서 대부분 함수 또는 클래스를 사용합니다. 예를 들면, 알림창을 띄울 때, `showDialog()` 와 같은 함수를 호출해야 합니다. 이와 같이 위젯이 하닌 기능을 `services` 패키지가 합니다.
+
+- 자세한 위젯 사용방법은 widgets/readme.md 파일 참고
+
+
+## 재사용 가능한 위젯 모음
+
+- `widgets` 패키지에서 `WidgetCollection` 위젯을 제공합니다. 이 위젯을 화면에 표시하면 사용가능한 모든 위젯을 볼 수 있습니다. 물론, 개발자가 자신이 만든 위젯을 이 위젯에 등록을 해야만 합니다.
+
+
+## 사용자 정보 표시
+
+- 회원 가입, 로그인, 로그아웃, 회원 정보 수정 등에서 회원 정보가 변할 때 적절히 표시 할 수 있어야 합니다. [x_flutter 프로젝트 문서](https://github.com/withcenter/x_flutter)를 참고 해 주세요.
+
+
+
+## 사진 업로드
+
+- 특정 위치에 원하는 사진을 표시하고 싶을 때, `UploadImage` 위젯을 통해서 이미지를 업로드 할 수 있습니다. [x_flutter 프로젝트 문서](https://github.com/withcenter/x_flutter)를 참고 해 주세요.
+
+
+## 자주 사용하는 기능
+
+### 알림창
+
+- `packages/services/utils/lib/src/functions.dart` 에는 `alert` 함수가 있습니다. 이 함수는 알림창 다이얼로그를 화면에 표시합니다.
+- `utils` 패키지를 포함하고, `alert` 함수를 사용하면 됩니다.
+
+### 에러 알림창
+
+- `packages/services/utils/lib/src/functions.dart` 에는 `error` 함수가 있습니다. 이 함수는 `alert` 함수를 사용하여 에러 다이얼로그를 화면에 표시합니다.
+- `utils` 패키지를 포함하고, `error` 함수를 사용하면 됩니다.
+
+
+## 게시판
+
+- 게시판의 경우 조금 복잡한 구조를 가집니다. 게시판 기능의 난이도는 일반 쇼핑몰의 난이도와 비슷하다고 보시면 됩니다.
+  - 게시판 기능을 본다면 관리자 페이지에서 게시판 카테고리 관리 부터 권한 관리, 사용자 화면에서 파일 업로드 및 표시, 삭제 기능 등 부터 코멘트 및 하위 코멘트 관리, 사용자가 입력한 URL 에 따른 동영상이나 기타 자료 표현, 추천/비추천 로그 관리를 통해서 동일한 글에 추천/비추천 못하게하거나 회원 별 게시글, 코멘트 목록, 검색 등 기본 기능만 해도 여러가지 많이 있습니다. 
+  - 물론 게시판 기능보다 쇼핑몰이 기능이 더 어려웠으면 어려웠지 더 쉽지는 않습니다. 쇼핑몰 기능에는 게시판 기능의 모든 것이 기본적으로 들어거야하고, 추가적으로  전자 결제 기능, 최근 본 상품, 장바구니, 후기, 문의 등등의 기능들 부터 해서 관리자 페이지 및 각종 관리, 통계 기능이 들어가야 하죠. 하지만, 게시판 기능을 잘 만들 수 있으면 쇼핑몰 기능도 잘 만들 수 있습니다.
+  - 만약, 기회가 된다면 꼭 게시판 전체를 직접 개발해 보시기를 권해드립니다.
+
+- 본 만능앱에서는 Martix 백엔드를 바탕으로 앱을 제작하며, Matrix 에는 이미 훌륭한 게시판 기능을 제공하고 있습니다. 플러터에서는 그냥 Matrix Restfual Api 를 사용해서 게시판 기능을 만들면 됩니다.
+
+### 게시판 카테고리 정보
+
+- 필요한 (사용 할) 게시판 카테고리 정보를 앱이 처음 부팅 할 때 미리 로드 해야 합니다.
+
+
+### ForumModel
+
+- 하나의 게시판 전체를 총관하는 역할을 합니다.
+
+
+
+# Mono repo
+
+- Mono repo 란, 하나의 Git repo 에 여러개의 프로젝트(또는 기능 별 모듈)가 관리되고 개발되는 것을 말합니다.
+
+- 만능앱은 굉장히 많은 기능들을 포함하고, 또 여러가지 형태로 파생되어 서브 프로젝트 개발 및 앱 스토어에 배포가 이루어 질 것입니다.
+  - 이와 같은 경우, 어떻게 하면 효율적으로 만능앱에서 필요한 기능만 쏙 빼서 나만의 앱을 만들 수 있을까요?
+  - 만능앱에서 서브 프로젝트를 생성 할 때 마다, 새로운 플러터 프로젝트를 만들고 원하는 기능의 소스 코드만 가져와서 개발할까요? 그런데 원본 소스가 계속 업데이트가 된다면요?
+  - 만능앱의 주요 요소를 패키지화하거나 서브 git repo 로 만들어 submodule 로 사용하면 조금 낫겠지만, 번거롭습니다.
+  - 플러터의 Flavor 도 많이 번거롭습니다.
+  - 이 문제의 핵심은 바로 코드 공유입니다.
+
+- Flavor 도 쓰지 않고, git submodule 방식으로 하지 않고, pub.dev 에 패키지를 올리지 않고, 더 간단하게 코드 공유를 할 수 있 방법?
+  - 그래서 Mono repo 를 선택 했습니다.
+  - 참고로 `Flutter SDK` 자체도 Mono repo 형식으로 개발되었습니다.
+
+- 흩어져 있는 repo 들은 `git subtree` 기능으로 모았으며, `/packages` 폴더에 재 사용가능한 코드를 모아 놓았습니다.
+  - 참고, 본 문서의 subtrees 항목
+
+- `/projects` 폴더에 서브 프로젝트를 생성하면 됩니다. 본 문서의 `개별 프로젝트 생성`을 참고해주세요.
+
+## 개별 프로젝트 생성
+
+나만의 앱(프로젝트)을 만들고자 할 때, `main` 브랜치로 부터 새로운 브랜치를 만들어서 할 수도 있습니다. 그리고 그 새로운 브랜치를 다른 나만의 git repo(또는 remote repo)로 연결하여 코드를 관리 할 수도 있겠습니다.
+`만능앱`에서는 개별 프로젝트를 만들고자 할 때 다음과 같은 방식으로 할 것을 권장합니다.
+
+- `projects` 폴더에 여러분의 프로젝트를 생성하면 됩니다.
+  - 참고로 `projects` 폴더는 `.gitignore` 에 추가되어져 있지 않습니다. 그래서 코드 공유를 원하지 않는다면, `global ignore` 에 추가를 해야 합니다.
+    - 예를 들어 `global ignore` 에 `projects/my` 를 등록하고, `projects/my` 폴더 안에 여러분의 프로젝트를 생성해도 됩니다. 그러면 그 프로젝트는 `만능앱` repo 추가되지 않습니다. 여러분의 개인 git repo 에 추가를 하면 됩니다.
+
+- 먼저 아래와 같이 여러분들의 프로젝트를 생성합니다.
+  - `$ cd projects`
+  - `$ flutter create project-name`
+
+- 프로젝트 생성 후, pubspec.yaml 설정을 통해서 `x_flutter` 를 비롯한 필요한 패키지를 추가합니다.
+  예를 들면 아래와 같습니다.
+  여러분들이 개발할 앱의 요구 사항에 맞게 수정하여 사용하시면 됩니다.
+
+- 예제) pubspec.yaml
+  - 아래는 예제이며, 실제로는 동작하지 않을 수 있습니다.
+
+```yaml
+name: youngja
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  get: ^4.1.4
+  get_storage: ^2.0.2
+  x_flutter: 0.0.7
+  user:
+    path: ../../packages/user
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  uses-material-design: true
+```
+
+위에 보시면, 아래와 같이 패키지 추가를 할 때, `path` 로 그 패키지가 어디에 있는지 지정을 했습니다. 이 처럼, 공통으로 사용하기 위해 만들어 놓은 패키지들을 `pubspec.yaml` 에 추가해서 사용하면 됩니다.
+
+```yaml
+  user:
+    path: ../../packages/user
+```
+
+## 각자의 프로젝트 설정
+
+- 루트 프로젝트의 `lib/main.dart` 에 있는 코드를 복사를 해서 쓰거나 비슷하게 쓰면 됩니다.
+
+
 # 위젯 패키지
 
 ## SVG
@@ -386,170 +636,6 @@ svg('money-exchange', package: '..'), // 앱 assets 경로
     pubspec.yaml 의 x_flutter 를 pub.dev 의 최신 버전으로 변경하면된다.
   - 주의 할 점은, pub.dev 의 패키지를 사용하는 경우, x_flutter 를 수정하면, github 에 적용이 안된다.
 
-# 코드 설명
-
-## 실행 및 설정
-
-- launch.json 사용 방법
-## 스크린 생성
-
-스크린(페이지)를 생성하는 방법에 대해서 설명을 합니다.
-
-
-- screens 폴더안에 스크린 폴더를 만들고, **.screen.dart 와 같이 dart 파일을 만듭니다.
-  - 예를 들어, 스크린의 이름이 memo 라면, 아래와 같이 만들면 됩니다.
-    - 예: `screens/memo/memo.screen.dart`
-
-- 그리고, services/route_name.dart 에 memo 라는 변수를 만듭니다.
-
-```dart
-class RouteNames {
-  static final String memo = 'memo'; // <== 여기에 추가
-}
-```
-
-- 그리고, main.ts 에서 getPages: 속성에 memo screen 을 추가합니다.
-
-```dart
-class AioApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GetMaterialApp(
-      // ...
-      getPages: [
-        // ...
-        GetPage(name: RouteNames.memo, page: () => MemoScreen()), // <== 여기에 추가
-      ],
-    );
-  }
-}
-```
-
-- 그리고, memo screen 으로 이동 할 수 있도록 메뉴(또는 특정 위치)에 버튼을 달고 클릭이 되면 `service.open(RouteNames.memo);` 를 실행해서 해당 페이지로 이동합니다.
-- 
-```dart
-ElevatedButton(
-  onPressed: () => service.open(RouteNames.memo), // 클릭하면, memo 스크린으로 이동
-  child: Text('메모장'),
-)
-```
-
-## Layout
-
-- 일반적으로 각 스크린(페이지)은 Scaffold 를 바탕으로 appbar, body 등을 구성하는데, 각 스크린 별로 통일된 디자인을 하기가 쉽지 않은데, Layout 이라는 위젯들 만들어, 그 안에 Scaffold 를 두고 통일된 appbar, body 등의 디자인을 적용하는 것입니다.
-  이렇게하면 모든 스크린에서 동일한 Scaffold 를 가지게 되어 일관성 있게 디장니을 유지할 수 있으며, Layout 을 수정하면 전체 스크린의 디자인이 모두 같이 변경되는 것입니다.
-  특히 메뉴, 퀵메뉴 등 여러가지 부가적인 기능을 Layout 에 추가 할 수 있습니다.
-
-- Layout 위젯은 각 프로젝트의 공유 widgets 폴더에 넣으면 됩니다.
-  그리고 이 위젯 안에서 packages/widgets/layout 에 있는 여러가지 위젯 중 하나를 선택해서 사용하면 됩니다.
-
-
-## widgets 패키지와 services 패키지 안내
-
-- `widgets` 패키지에는 재 사용 가능한 위젯이 들어가는데, 좀 복잡한 위젯이 있을 수 있습니다. `services` 패키지는 말 그대로 서비스가 필요한 경우를 말합니다.
-  이 둘의 차이는 `widgets` 패키지는 오직 위젯만 제공합니다. 버튼 위젯, 사용자 이름 표시 위젯 등 앱 내에 표시할 위젯만 제공합니다.
-  `services` 패키지는 위젯을 제공하지 않습니다. 위젯보다는 로직 또는 기능을 제공합니다. 그래서 대부분 함수 또는 클래스를 사용합니다. 예를 들면, 알림창을 띄울 때, `showDialog()` 와 같은 함수를 호출해야 합니다. 이와 같이 위젯이 하닌 기능을 `services` 패키지가 합니다.
-
-- 자세한 위젯 사용방법은 widgets/readme.md 파일 참고
-
-
-## 재사용 가능한 위젯 모음
-
-- `widgets` 패키지에서 `WidgetCollection` 위젯을 제공합니다. 이 위젯을 화면에 표시하면 사용가능한 모든 위젯을 볼 수 있습니다. 물론, 개발자가 자신이 만든 위젯을 이 위젯에 등록을 해야만 합니다.
-
-
-## 사용자 정보 표시
-
-- 회원 가입, 로그인, 로그아웃, 회원 정보 수정 등에서 회원 정보가 변할 때 적절히 표시 할 수 있어야 합니다. [x_flutter 프로젝트 문서](https://github.com/withcenter/x_flutter)를 참고 해 주세요.
-
-
-
-## 사진 업로드
-
-- 특정 위치에 원하는 사진을 표시하고 싶을 때, `UploadImage` 위젯을 통해서 이미지를 업로드 할 수 있습니다. [x_flutter 프로젝트 문서](https://github.com/withcenter/x_flutter)를 참고 해 주세요.
-
-
-## 게시판
-
-- 게시판의 경우 조금 복잡한 구조를 가집니다. 게시판 기능의 난이도는 일반 쇼핑몰의 난이도와 비슷하다고 보시면 됩니다.
-  - 게시판 기능을 본다면 관리자 페이지에서 게시판 카테고리 관리 부터 권한 관리, 사용자 화면에서 파일 업로드 및 표시, 삭제 기능 등 부터 코멘트 및 하위 코멘트 관리, 사용자가 입력한 URL 에 따른 동영상이나 기타 자료 표현, 추천/비추천 로그 관리를 통해서 동일한 글에 추천/비추천 못하게하거나 회원 별 게시글, 코멘트 목록, 검색 등 기본 기능만 해도 여러가지 많이 있습니다. 
-  - 물론 게시판 기능보다 쇼핑몰이 기능이 더 어려웠으면 어려웠지 더 쉽지는 않습니다. 쇼핑몰 기능에는 게시판 기능의 모든 것이 기본적으로 들어거야하고, 추가적으로  전자 결제 기능, 최근 본 상품, 장바구니, 후기, 문의 등등의 기능들 부터 해서 관리자 페이지 및 각종 관리, 통계 기능이 들어가야 하죠. 하지만, 게시판 기능을 잘 만들 수 있으면 쇼핑몰 기능도 잘 만들 수 있습니다.
-  - 만약, 기회가 된다면 꼭 게시판 전체를 직접 개발해 보시기를 권해드립니다.
-
-- 본 만능앱에서는 Martix 백엔드를 바탕으로 앱을 제작하며, Matrix 에는 이미 훌륭한 게시판 기능을 제공하고 있습니다. 플러터에서는 그냥 Matrix Restfual Api 를 사용해서 게시판 기능을 만들면 됩니다.
-
-### 게시판 카테고리 정보
-
-- 필요한 (사용 할) 게시판 카테고리 정보를 앱이 처음 부팅 할 때 미리 로드 해야 합니다.
-
-
-### ForumModel
-
-- 하나의 게시판 전체를 총관하는 역할을 합니다.
-
-
-
-# Mono repo
-
-- Mono repo 란, 하나의 Git repo 에 여러개의 프로젝트가 관리되고 개발되는 것을 말합니다.
-
-- 만능앱은 굉장히 많은 기능들을 포함하고, 또 여러가지 형태로 파생되어 서브 프로젝트 개발 및 앱 스토어에 배포가 이루어 질 것입니다.
-  - 이와 같은 경우, 어떻게 하면 효율적으로 만능앱에서 필요한 기능만 쏙 빼서 나만의 앱을 만들 수 있을까요?
-  - 만능앱에서 서브 프로젝트를 생성 할 때 마다, 새로운 플러터 프로젝트를 만들고 원하는 기능의 소스 코드만 가져와서 개발할까요? 그런데 원본 소스가 계속 업데이트가 된다면요?
-  - 만능앱의 주요 요소를 패키지화하거나 서브 git repo 로 만들어 submodule 로 사용하면 조금 낫겠지만, 번거롭습니다.
-  - 플러터의 Flavor 도 만이 번거롭습니다.
-  - 이 문제의 핵심은 바로 코드 공유입니다.
-
-- Flavor 도 쓰지 않고, git submodule 방식으로 하지 않고, pub.dev 에 패키지를 올리지 않고, 더 간단하게 코드 공유를 할 수 있 방법?
-  - 그래서 Mono repo 를 선택 했습니다.
-
-- 흩어져 있는 repo 들은 `git subtree` 기능으로 모았으며, `/packages` 폴더에 재 사용가능한 코드를 모아 놓았습니다.
-  - 참고, 본 문서의 subtrees 항목
-
-- `/projects` 폴더에 서브 프로젝트를 생성하면 됩니다.
-
-## 각자의 프로젝트 생성
-
-- 먼저 아래와 같이 여러분들의 프로젝트를 생성합니다.
-  - `$ cd projects`
-  - `$ flutter create project-name`
-
-- 프로젝트 생성 후, pubspec.yaml 설정을 통해서 `x_flutter` 를 비롯한 필요한 패키지를 추가합니다.
-  예를 들면 아래와 같습니다.
-  여러분들이 개발할 앱의 요구 사항에 맞게 수정하여 사용하시면 됩니다.
-
-- 예제) pubspec.yaml
-  - 아래는 예제이며, 실제로는 동작하지 않을 수 있습니다.
-```yaml
-name: youngja
-description: A new Flutter project.
-publish_to: 'none'
-version: 1.0.0+1
-
-environment:
-  sdk: ">=2.12.0 <3.0.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.2
-  get: ^4.1.4
-  get_storage: ^2.0.2
-  x_flutter: 0.0.7
-  user:
-    path: ../../packages/user
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-flutter:
-  uses-material-design: true
-```
-
-## 각자의 프로젝트 설정
-
-- 루트 프로젝트의 `lib/main.dart` 에 있는 코드를 복사를 해서 쓰거나 비슷하게 쓰면 됩니다.
-
 
 # 파이어베이스
 
@@ -562,7 +648,12 @@ flutter:
 
 ## 파이어베이스 설정
 
-- 자세한 사항은 파이어베이스 패키지(`packages/x_firebase`)의 README.md 를 참고합니다.
+- 자세한 사항은 파이어베이스 패키지(`packages/firebase`)의 README.md 를 참고합니다.
+
+- `packages/firebase` 폴더 안에 각각의 기능 별 firebase 패키지가 있습니다.
+  - Firebase 의 모든 기능을 하나의 패키지로 만들지 않고, 기능 별로 따로 패키지를 만드는 이유는 설정을 쉽게하기 위해서입니다.
+  - 예를 들어, Firebase 의 Auth 를 통해서 Facebook 로그인을 한다면, Facebook sign-in 패키지를 추가하면 반드시 설정을 해야합니다. 패키지 추가만 해 놓고 설정을 하지 않으면 에러가 발생하는데, Facebook 로그인을 사용하지 않아도, 일일히 설정을 해 주어야하는 번거로움이 발생합니다.
+    - 이런 이유로 기능별로 세부적인 패키지를 만들게 됩니다.
 
 - 안드로이드의 경우 파이어베이스 프로젝트 SDK key 파일만 추가하면, 나머지 설정은 비교적 쉽습니다.
 
