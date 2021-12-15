@@ -41,7 +41,9 @@ class CurrencyTile extends StatelessWidget {
                 GetBuilder<CurrencyController>(
                   id: "$code2",
                   builder: (_) {
-                    if (_.loadingList[code2] != null && _.loadingList[code2] == false)
+                    if (_.loadingList[code2] != null &&
+                        _.loadingList[code2] == false &&
+                        _.currencyError[code2] == false)
                       return AutoSizeText(
                         '${_.currencies[_.codes[0]]!.symbol} ${_.values[0]} ${_.codes[0]} = ' +
                             ((_.currencyError[code2] == null || _.currencyError[code2] == false)
@@ -74,7 +76,7 @@ class CurrencyTile extends StatelessWidget {
                       );
                     if (_.loadingList[code2] == null || _.loadingList[code2] == true)
                       return Spinner(
-                        size: 16,
+                        size: 14,
                         valueColor: Colors.black87,
                       );
                     return SizedBox();

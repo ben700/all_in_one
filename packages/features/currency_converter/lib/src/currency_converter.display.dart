@@ -108,8 +108,8 @@ class CurrencySelect extends StatelessWidget {
                       ? TextField(
                           controller: TextEditingController(text: 'Error. Tap to Reload'),
                           readOnly: true,
-                          onTap: () => _.loadCurrency(),
-                          style: TextStyle(fontSize: 24),
+                          onTap: () => _.loadCurrency(reloadList: false),
+                          style: TextStyle(fontSize: 18),
                         )
                       : TextField(
                           controller: TextEditingController(text: _.values[i]),

@@ -75,7 +75,7 @@ class CurrencyController extends GetxController {
   }
 
   /// This is being called when user change the Currency (of the country).
-  loadCurrency({int codeIndex = 0}) async {
+  loadCurrency({int codeIndex = 0, reloadList: true}) async {
     if (isCurrencyError) {
       loader[0] = true;
       loader[1] = true;
@@ -97,10 +97,11 @@ class CurrencyController extends GetxController {
         convert[0] = 0.00;
         convert[1] = 0.00;
         isCurrencyError = true;
+        onError(currencies[codes[1]]!.name + " currency data is not available.");
       }
 
       compute(codeIndex);
-      loadList();
+      if (reloadList) loadList();
     } catch (e) {
       onError(e);
     }
@@ -132,6 +133,7 @@ class CurrencyController extends GetxController {
         currencyConvert[code] = 0.00;
         currencyValue[code] = '0.00';
         currencyError[code] = true;
+        onError(currencies[code]!.name + " currency data is not available.");
       }
     } catch (e) {
       currencyError[code] = true;
