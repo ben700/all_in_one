@@ -101,6 +101,7 @@ class _AppTitleBarState extends State<AppTitleBar> {
                     color: Colors.black,
                     size: 30,
                   ),
+                  Text('if you are a tester ben700 hot mail can help you out of matrix', style: widget.menuTextStyle),
                   Text('글쓰기', style: widget.menuTextStyle)
                 ],
               )),
